@@ -19,6 +19,24 @@
 [参考](https://ruslanspivak.com/lsbasi-part1/)  
 
 
+## Let’s Build A Simple Interpreter Part 2.
+### 概念
+
+- 由tokens中的字符构成的序列称为语义(lexeme)；
+- 挖掘tokens序列中的结构的过程称为
+
+[calc2](../compilation-principles-note/lsbasi/calc2.py)相对于[calc1](../compilation-principles-note/lsbasi/calc1.py)增加了以下功能：
+- 处理了输入字符串中的空格；
+- 可以接受多个数字的输入，但依然只抽取前面两个数字进行运算；
+- 增加了减法运算
+  
+代码改动如下：
+- 对*get_next_token*方法进行了重构。pos指针向后移动的逻辑被advance方法分解了；
+- 新增了两个方法*skip_whitespace*用来来忽略空格，*integer*用来处理多个数字的输入；
+- *expr*修改后可以识别不仅可以识别INTEGER -> PLUS -> INTEGER，还可以识别INTEGER -> MINUS -> INTEGER。
+
+
+
   
 
 
