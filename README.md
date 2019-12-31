@@ -22,8 +22,12 @@
 ## Let’s Build A Simple Interpreter Part 2.
 ### 概念
 
-- 由tokens中的字符构成的序列称为语义(lexeme)；
-- 挖掘tokens序列中的结构的过程称为
+- 由tokens中的字符构成的序列称为`语义(lexeme)`；
+- 分析tokens序列结构的过程，换句话说在tokens序列中识别短语(phrase)的过程称为`解析(parsing)`，解释器或者编译器中执行这个过程的部分称为`解析器(parser)`。
+
+例如，[calc2](../compilation-principles-note/lsbasi/calc2.py)的expr函数通过 *get_next_token* 方法来分析输入字符串的结构，判断是什么类型的`短语(phase)`,例如是加法还是减法，然后解释已经识别的短语，生成算数表达式的结果。
+
+> 所以，*expr*是解释器的一部分，解析(parsing)和解释(interpreting )都在这里发生。
 
 [calc2](../compilation-principles-note/lsbasi/calc2.py)相对于[calc1](../compilation-principles-note/lsbasi/calc1.py)增加了以下功能：
 - 处理了输入字符串中的空格；
@@ -35,8 +39,14 @@
 - 新增了两个方法*skip_whitespace*用来来忽略空格，*integer*用来处理多个数字的输入；
 - *expr*修改后可以识别不仅可以识别INTEGER -> PLUS -> INTEGER，还可以识别INTEGER -> MINUS -> INTEGER。
 
-
+[参考](https://ruslanspivak.com/lsbasi-part2/)
 
   
 
+## Let’s Build A Simple Interpreter Part 3.
 
+[calc3](../compilation-principles-note/lsbasi/calc3.py)
+新增解析和运行含有任意个数量的加号或者减号的算术表达式，例如：“7 - 3 + 2 - 1”。
+
+- `语法分析图(syntax diagram)`是某种编程语言语法规则的图形展示；
+- 语法分析也称为
