@@ -45,8 +45,58 @@
 
 ## Let’s Build A Simple Interpreter Part 3.
 
-[calc3](../compilation-principles-note/lsbasi/calc3.py)
-新增解析和运行含有任意个数量的加号或者减号的算术表达式，例如：“7 - 3 + 2 - 1”。
+[calc3](lsbasi/calc3.py)新增解析和运行含有任意个数量的加号或者减号的算术表达式，例如：“7 - 3 + 2 - 1”。
 
-- `语法分析图(syntax diagram)`是某种编程语言语法规则的图形展示；
-- 语法分析也称为
+`语法分析图(syntax diagram)`是某种编程语言语法规则的图形展示；
+语法分析图的主要有两个目的：
+- 图形化的表示一种编程语言的规范
+- 用来帮助我们编写解析器，可以通过简单的规则将关系图映射到代码中。
+
+我们已经知道在tokens流中识别短语的过程称为**parsing**。解释器或者编译器执行这个工作的部分称为解析器(**parser**)。解析也称为语法分析(**syntax analysis**)，因此语法解析器也可以恰当的被称为语法分析器(**syntax analyzer**)。
+[clac3](lsbasi/calc3.py)中的解析器代码如下：
+```python
+def term(self):
+    self.eat(INTEGER)
+
+def expr(self):
+    # set current token to the first token taken from the input
+    self.current_token = self.get_next_token()
+
+    self.term()
+    while self.current_token.type in (PLUS, MINUS):
+        token = self.current_token
+        if token.type == PLUS:
+            self.eat(PLUS)
+            self.term()
+        elif token.type == MINUS:
+            self.eat(MINUS)
+            self.term()
+```
+解析器本身不解释任何东西，如果它识别了一个表达式，它就没有任何异常；如果没有识别，就会抛出语法异常。
+由于解析器需要计算表达式的值，因此对`term`方法进行了修改，使其返回一个整数值。同时对expr方法进行了修改，使其在适当的位置执行加法和减法，并返回解释结果：
+```python
+def term(self):
+    """Return an INTEGER token value"""
+    token = self.current_token
+    self.eat(INTEGER)
+    return token.value
+
+def expr(self):
+    """Parser / Interpreter """
+    # set current token to the first token taken from the input
+    self.current_token = self.get_next_token()
+
+    result = self.term()
+    while self.current_token.type in (PLUS, MINUS):
+        token = self.current_token
+        if token.type == PLUS:
+            self.eat(PLUS)
+            result = result + self.term()
+        elif token.type == MINUS:
+            self.eat(MINUS)
+            result = result - self.term()
+
+    return result
+
+```
+
