@@ -100,3 +100,14 @@ def expr(self):
 
 ```
 
+## Let’s Build A Simple Interpreter. Part 4.
+上下文无关语法context-free grammars (简称grammars)或者**BNF**(Backus-Naur Form)
+1. grammar以简洁的方式声明了编程语言的语法。与语法图不同，grammars非常紧凑；
+2. grammar可以作为很好的文档；
+3. 即使您从头开始手动编写解析器，grammar也是一个很好的起点。通常，您可以通过遵循一组简单的规则将语法转换为代码。
+4. 解析器生成器(parser generators)接受grammar作为输入，并根据grammar自动生成解析器。
+
+
+grammer由一系列规则(*rules*)组成，也称为结果(*productions*)。
+
+规则由非终端符(*non-terminal*)组成，称为一个*production*的**head**或者 **left-hand side** 
