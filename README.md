@@ -109,31 +109,31 @@ def expr(self):
 
 下图就是一个算术表达式“7 * 4 / 2 * 3”的grammar描述：
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf1.png"/>
+<img src="https://tva1.sinaimg.cn/large/005M9EsMly1gb27lvcydqj30sg08mglo.jpg"/>
 </div>
 
 **grammer**由一系列规则(**rules**)组成，也称为结果(**productions**)。下图的**grammar**有两个**rules**。
 
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf2.png"/>
+<img src="https://tvax2.sinaimg.cn/large/005M9EsMly1gb27xb9ao3j30sg0audg8.jpg"/>
 </div>
 
 
-规则*non-terminal*称为*production*的**head**或者 **left-hand side** 、分号和一系列*terminals*或者*non-terminals*组成，它们称为*productio*n的**body**或者**right-hand side**。
+规则*non-terminal*称为*production*的**head**或者 **left-hand side** 、冒号和一系列*terminals*或者*non-terminals*组成，它们称为*productio*n的**body**或者**right-hand side**。
 
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf3.png"/>
+<img src="https://tvax4.sinaimg.cn/large/005M9EsMly1gb27xs3gefj30sg0ek3z8.jpg"/>
 </div>
 
 在上图中grammar ，像MUL, DIV, 和 INTEGER这样的tokens 称为**terminals**，像*expr* 和*factor* 这样的变量称为**non-terminals**。**Non-terminals** 通常由一系列**terminals** 或者**non-terminals**混合组成：
 
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf4.png"/>
+<img src="https://tva2.sinaimg.cn/large/005M9EsMly1gb27ybe8pdj30sg0e53yx.jpg"/>
 </div>
 
 第一条*rule*左边的*non-terminal*符号称为**start symbol**。在我们*grammar*的例子中，*start symbol*是*expr*。
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf5.png"/>
+<img src="https://tvax1.sinaimg.cn/large/005M9EsMly1gb27ytv6w3j30sg0bl0sx.jpg"/>
 </div>
 
 你可以将上述的*rule expr*读作："expr是一个可选的factor，后面跟着一个乘法或除法运算符，后面可以跟着另一个factor，然后后面跟着一个乘法或除法运算符，后面跟着另一个factor，依此类推"
@@ -144,17 +144,17 @@ def expr(self):
 
 下图展示了grammer得到表达式"3"：
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_derive1.png"/>
+<img src="https://tvax2.sinaimg.cn/large/005M9EsMly1gb27zcbk3sj30sg0fg3yp.jpg"/>
 </div>
 
 下图展示了grammer得到表达式3 * 7：
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_derive2.png"/>
+<img src="https://tva2.sinaimg.cn/large/005M9EsMly1gb27zpr9npj30sg0f7aaf.jpg"/>
 </div>
 
 下图展示了grammer得到表达式 3 * 7 / 2：
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_derive3.png"/>
+<img src="https://tvax4.sinaimg.cn/large/005M9EsMly1gb2800x3e3j30sg0ezjrz.jpg"/>
 </div>
 
 
@@ -167,12 +167,12 @@ def expr(self):
 
 以上指南的图形展示如下：
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_rules.png"/>
+<img src="https://tva3.sinaimg.cn/large/005M9EsMly1gb2824xaudj30sg0gqmyg.jpg"/>
 </div>
 
 现在按照上面的指南把下面的grammer转换为代码。
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf1.png"/>
+<img src="https://tva1.sinaimg.cn/large/005M9EsMly1gb27lvcydqj30sg08mglo.jpg"/>
 </div>
 
 grammer中有两条rules：一个是expr rule，另一个是factor rule。以factor rule(也称为production)开始。根据指南1，需要创建一个名为*factor*的方法，该方法只有一个对eat方法的调用来使用INTEGER token(根据指南4)。
@@ -197,7 +197,7 @@ def expr(self):
 
 这是同一个*expr* rule的语法分析图：
 <div align=center>
-<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_sd.png"/>
+<img src="https://tva2.sinaimg.cn/large/005M9EsMly1gb282m16laj33e41aw74o.jpg"/>
 </div>
 
 
