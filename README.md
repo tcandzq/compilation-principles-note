@@ -101,16 +101,108 @@ def expr(self):
 ```
 
 ## Let’s Build A Simple Interpreter. Part 4.
-上下文无关语法context-free grammars (简称grammars)或者**BNF**(Backus-Naur Form)
-1. grammar以简洁的方式声明了编程语言的语法。与语法图不同，grammars非常紧凑；
+上下文无关语法**context-free grammars** (简称**grammars**)或者**BNF**(Backus-Naur Form)
+1. **grammar**以简洁的方式声明了编程语言的语法。与语法图不同，**grammars**的表达非常紧凑；
 2. grammar可以作为很好的文档；
-3. 即使您从头开始手动编写解析器，grammar也是一个很好的起点。通常，您可以通过遵循一组简单的规则将语法转换为代码。
-4. 解析器生成器(parser generators)接受grammar作为输入，并根据grammar自动生成解析器。
+3. 即使您从头开始手动编写解析器，**grammar**也是一个很好的起点。通常，您可以通过遵循一组简单的规则将**grammar**转换为代码。
+4. 解析器生成器(**parser generators**)接受**grammar**作为输入，并根据**grammar**自动生成解析器。
+
+下图就是一个算术表达式“7 * 4 / 2 * 3”的grammar描述：
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf1.png"/>
+</div>
+
+**grammer**由一系列规则(**rules**)组成，也称为结果(**productions**)。下图的**grammar**有两个**rules**。
+
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf2.png"/>
+</div>
 
 
-grammer由一系列规则(*rules*)组成，也称为结果(*productions*)。
+规则*non-terminal*称为*production*的**head**或者 **left-hand side** 、分号和一系列*terminals*或者*non-terminals*组成，它们称为*productio*n的**body**或者**right-hand side**。
 
-规则由非终端符(*non-terminal*)组成，称为一个*production*的**head**或者 **left-hand side** 
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf3.png"/>
+</div>
+
+在上图中grammar ，像MUL, DIV, 和 INTEGER这样的tokens 称为**terminals**，像*expr* 和*factor* 这样的变量称为**non-terminals**。**Non-terminals** 通常由一系列**terminals** 或者**non-terminals**混合组成：
+
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf4.png"/>
+</div>
+
+第一条*rule*左边的*non-terminal*符号称为**start symbol**。在我们*grammar*的例子中，*start symbol*是*expr*。
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf5.png"/>
+</div>
+
+你可以将上述的*rule expr*读作："expr是一个可选的factor，后面跟着一个乘法或除法运算符，后面可以跟着另一个factor，然后后面跟着一个乘法或除法运算符，后面跟着另一个factor，依此类推"
+
+在本文中*factor*只是一个整数。
+
+如果从*grammer* 得到某个算术表达式，那么它就不支持该表达式，解析器在试图识别该表达式的时候将生成语法错误。
+
+下图展示了grammer得到表达式"3"：
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_derive1.png"/>
+</div>
+
+下图展示了grammer得到表达式3 * 7：
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_derive2.png"/>
+</div>
+
+下图展示了grammer得到表达式 3 * 7 / 2：
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_derive3.png"/>
+</div>
+
+
+现在遵循下面这些grammar 转为源代码的指南，我们能够逐字的将grammer转换为可以运行的解析器。
+- grammer中定义的每一条规则**R**成为一个同名的方法，对该规则的引用成为方法的调用**R():**。
+  方法体内遵循和规则体内一样的指导原则；
+- 可选符号(a1 | a2 | aN) 成为 ***if-elif-else*** 语句；
+- 可选分组符号(...)*成为**while**语句，可以循环多次；
+- 对token **T** 的引用变成对方法`eat.eat(T)`的调用。eat方法的运行方式是，如果token T与当前的*lookahead* token一致，就使用T，然后从lexer获取一个新的token，并将新Token赋值给内部变量*current_token*。
+
+以上指南的图形展示如下：
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_rules.png"/>
+</div>
+
+现在按照上面的指南把下面的grammer转换为代码。
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_bnf1.png"/>
+</div>
+
+grammer中有两条rules：一个是expr rule，另一个是factor rule。以factor rule(也称为production)开始。根据指南1，需要创建一个名为*factor*的方法，该方法只有一个对eat方法的调用来使用INTEGER token(根据指南4)。
+```python
+def factor(self):
+    self.eat(INTEGER)
+```
+rule *expr*成为*expr*方法(根据指南1)。rule 内部以对*factor*的引用开始，该引用变成对方法factor()的调用。可选分祖符(...)*变成while循环，*(MUL | DIV)*变成 *if-elif-else*语句。把这些片段组合起来就可以得到如下的 *expr*方法：
+```python
+def expr(self):
+    self.factor()
+
+    while self.current_token.type in (MUL, DIV):
+        token = self.current_token
+        if token.type == MUL:
+            self.eat(MUL)
+            self.factor()
+        elif token.type == DIV:
+            self.eat(DIV)
+            self.factor()
+```
+
+这是同一个*expr* rule的语法分析图：
+<div align=center>
+<img src="../compilation-principles-note/lsbasi/assert/lsbasi_part4_sd.png"/>
+</div>
+
+
+[calc4](lsbasi/calc4.py)可以处理包含整数和任意数量乘法、除法的算术表达式。它把词法分析器( lexical analyzer )重构为了一个单独的类Lexer，并更新了类Interpreter，该类以Lexer的实例为入参。
+
 
 
 ## Let’s Build A Simple Interpreter. Part 5.
