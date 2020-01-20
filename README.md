@@ -208,6 +208,72 @@ def expr(self):
 ## Let’s Build A Simple Interpreter. Part 5.
 
 
+[calc5](lsbasi/calc5.py)解析并解释含有任意数量加法、减法、乘法和除法等运算符的算术表达式。解释器可以计算像“14 + 2 * 3 - 6 / 2”这样的表达式。
+
+<div align=center>
+<img src="https://tvax4.sinaimg.cn/large/005M9EsMly1gb36fmx0qlj30sg09st97.jpg"/>
+</div>
+
+
+运算优先级表中加法和减法运算符有同样的优先级，都是左结合(left-associative)。运算符*和/也都是左结合，它们之间有相同的优先级，但其优先级高于加法和减法运算符。
+
+下面是如何从优先级表中构建一个grammer的规则:
+1. 为每个优先级定义一个非终结符。非终结符的production体应该包含该优先级的算术运算符和下一个优先级更高的运算符;
+2. 为基本表达式单元(在我们的例子中是integers)创建一个额外的非终结符factor。一般的规则是，如果你有N个优先级，你将总共需要N+1个非终结符，每个级别对应一个非终结符，然后加上一个非终结符用于基本的表达式单元。
+
+
+
+根据规则1，需要定义两个非终结符：一个非终结符是*expr*，表示优先级2，另一个非终结符为*item*，表示优先级1。通过规则2，我们将为算术表达式的基本单元integers定义一个非终结符factor。
+
+新的grammer的开始符号将是*expr*，*expr* production将包含一个优先级为2的运算符的使用，在我们的示例中是运算符+和-，并将包含下一个具有更高优先级(级别1)的非终结符。
+
+<div align=center>
+<img src="https://tvax4.sinaimg.cn/large/005M9EsMly1gb39ime0nzj30nn026jrb.jpg"/>
+</div>
+
+*term* production 包含使用优先级为1的运算符的表达式，它们是 * and /，并将包含算术表达式基本单元 integers 的非终结符factor。
+
+
+<div align=center>
+<img src="https://tvax2.sinaimg.cn/large/005M9EsMly1gb39uhfdi9j30lq01x747.jpg"/>
+</div>
+
+非终结符 factor的production将是：
+
+<div align=center>
+<img src="https://tvax3.sinaimg.cn/large/005M9EsMly1gb39we6289j30bx022dfo.jpg"/>
+</div>
+
+
+我们将上述合并为一个grammer，该grammer主要关注操作符的结合性和优先级。
+<div align=center>
+<img src="https://tva3.sinaimg.cn/large/005M9EsMly1gb3a2ffixzj30sg0a8dg9.jpg"/>
+</div>
+
+
+上述grammer对应的语法图如下：
+<div align=center>
+<img src="https://tva2.sinaimg.cn/large/005M9EsMly1gb3a3gr9q6j30rp0lcq3s.jpg"/>
+</div>
+
+图中的每一个矩形框都是对另外一个图的方法调用。如果输入表达式7 + 5 * 2 ，从顶部的图*expr*开始往下走到底部的图*factor*，能够看到排列位置较低的关系图中的高优先级运算符*  /  比位置较高的关系图中的运算符+ -先执行。
+
+
+下满更加详细的显示了在表达式7 + 5 * 2中高优先级运算符比低优先级运算符先执行的情况。
+
+<div align=center>
+<img src="https://tva1.sinaimg.cn/large/005M9EsMly1gb3am3iuecj30sg0fx3zs.jpg"/>
+</div>
+
+
+
+[calc5](lsbasi/calc5.py)相对于[calc4](lsbasi/calc4.py)有以下改动
+- 类Lexer 现在可以处理(tokenize) +，-，*，/；
+- grammer中定义的每条规则(*production*)**R**将变成同名的方法，对该规则的引用变成一次方法调用：**R()**。因此，类*Interpreter*现在有三个方法，对应grammer中的非终结符：expr，term，factor。
+
+
+
+
 ## Let’s Build A Simple Interpreter. Part 6.
 
 ## Let’s Build A Simple Interpreter. Part 7: Abstract Syntax Trees
